@@ -2,22 +2,18 @@ package main
 
 import (
 	"fmt"
-	"nomad-go/chapter2/accounts"
+	"nomad-go/chapter2/banking"
 )
 
 func main() {
-	account := accounts.NewAccount("hoo")
-	account.Deposit(30)
-	fmt.Println(account.Balance())
-	//err := account.Withdraw(20)
-	//if err != nil {
-	//	fmt.Println(err)
-	//	log.Fatalln(err)
-	//}
-	fmt.Println(account.Balance())
-	fmt.Println(account.Owner())
-	account.ChangeOwner("Hoo")
-	fmt.Println(account.Owner())
+	// 이 상태는 모든 클라이언트에게 열려있는 상태 -> 누구나 값을 변경할 수 있다.
+	//account := banking.Account{Owner: "hoo", Balance: 1000000}
+	//account.Balance = 100
+	//fmt.Println(account)
+
+	account := banking.NewAccount("hoo")
 	fmt.Println(account)
-	// GO 는 보안을 위해 복사본을 만든다. 그걸 원치 않을 때 포인터를 사용하자.
+
 }
+
+// Golang 은 생성자가 없기 때문에 function 으로 생성하거나 struct 를 만들어야한다.
