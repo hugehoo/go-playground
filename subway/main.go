@@ -13,7 +13,7 @@ type ArrivalInfo struct {
 		Status  int    `json:"status"`
 		Code    string `json:"code"`
 		Message string `json:"message"`
-	}
+	} `json:"errorMessage"`
 	RealtimeArrivalList []struct {
 		SubwayID    string `json:"subwayId"`
 		SubwaysNm   string `json:"subwaysNm"`
@@ -47,10 +47,11 @@ func fetchArrivalInfo(url string, wg *sync.WaitGroup, ch chan<- *ArrivalInfo, er
 }
 
 func main() {
-	urls := []string{
-		"http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/6/역삼",
-		"http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/6/강남",
-		"http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/6/교대",
+	baseUrl := "http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/6/"
+	lineTwoStations := []string{"역삼", "강남", "교대", "서초", "방배", "사당"}
+	var urls []string
+	for _, v := range lineTwoStations {
+		urls = append(urls, fmt.Sprint(baseUrl, v))
 	}
 
 	var wg sync.WaitGroup
@@ -72,6 +73,9 @@ func main() {
 		select {
 		case arrivalInfo, ok := <-ch:
 			if !ok {
+				return
+			}
+			if arrivalInfo.ErrorMessage.Status != 200 {
 				return
 			}
 			// Display the arrival information
