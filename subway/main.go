@@ -24,6 +24,7 @@ type ArrivalInfo struct {
 		StatnFid    string `json:"statnFid"`
 		StatnTid    string `json:"statnTid"`
 		StatnId     string `json:"statnId"`
+		UpdnLine    string `json:"updnLine"`
 	} `json:"realtimeArrivalList"`
 }
 
@@ -47,7 +48,7 @@ func fetchArrivalInfo(url string, wg *sync.WaitGroup, ch chan<- *ArrivalInfo, er
 }
 
 func main() {
-	baseUrl := "http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/6/"
+	baseUrl := "http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/8/"
 	lineTwoStations := []string{"역삼", "강남", "교대", "서초", "방배", "사당"}
 	var urls []string
 	for _, v := range lineTwoStations {
@@ -80,7 +81,17 @@ func main() {
 			}
 			// Display the arrival information
 			for _, arrival := range arrivalInfo.RealtimeArrivalList {
-				fmt.Printf("Subway ID: %s, Line: %s, Station: %s, Arrival Message: %s\n", arrival.SubwayID, arrival.SubwaysNm, arrival.StatnNm, arrival.ArvlMsg2)
+				fmt.Printf("Subway ID: %s, Line: %s, Station: %s, Arrival Message: %s, , Arrival Message3: %s, TrainLineNm: %s, StatnFid: %s, StatnTid: %s, StatnId: %s, UpdnLine: %s\n",
+					arrival.SubwayID,
+					arrival.SubwaysNm,
+					arrival.StatnNm,
+					arrival.ArvlMsg2,
+					arrival.ArvlMsg3,
+					arrival.TrainLineNm,
+					arrival.StatnFid,
+					arrival.StatnTid,
+					arrival.StatnId,
+					arrival.UpdnLine)
 			}
 			fmt.Println("--------------------------------------")
 		case err := <-errCh:
