@@ -1,58 +1,56 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"sync"
 )
 
-type ArrivalInfo struct {
-	ErrorMessage struct {
-		Status  int    `json:"status"`
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	} `json:"errorMessage"`
-	RealtimeArrivalList []struct {
-		SubwayID    string `json:"subwayId"`
-		SubwaysNm   string `json:"subwaysNm"`
-		StatnNm     string `json:"statnNm"`
-		ArvlMsg2    string `json:"arvlMsg2"`
-		ArvlMsg3    string `json:"arvlMsg3"`
-		TrainLineNm string `json:"trainLineNm"`
-		StatnFid    string `json:"statnFid"`
-		StatnTid    string `json:"statnTid"`
-		StatnId     string `json:"statnId"`
-		UpdnLine    string `json:"updnLine"`
-	} `json:"realtimeArrivalList"`
-}
+//type ArrivalInfo struct {
+//	ErrorMessage struct {
+//		Status  int    `json:"status"`
+//		Code    string `json:"code"`
+//		Message string `json:"message"`
+//	} `json:"errorMessage"`
+//	RealtimeArrivalList []struct {
+//		SubwayID    string `json:"subwayId"`
+//		SubwaysNm   string `json:"subwaysNm"`
+//		StatnNm     string `json:"statnNm"`
+//		ArvlMsg2    string `json:"arvlMsg2"`
+//		ArvlMsg3    string `json:"arvlMsg3"`
+//		TrainLineNm string `json:"trainLineNm"`
+//		StatnFid    string `json:"statnFid"`
+//		StatnTid    string `json:"statnTid"`
+//		StatnId     string `json:"statnId"`
+//		UpdnLine    string `json:"updnLine"`
+//	} `json:"realtimeArrivalList"`
+//}
 
-func fetchArrivalInfo(url string, wg *sync.WaitGroup, ch chan<- *ArrivalInfo, errCh chan<- error) {
-	defer wg.Done()
-
-	resp, err := http.Get(url)
-	if err != nil {
-		errCh <- err
-		return
-	}
-	defer resp.Body.Close()
-
-	var arrivalInfo ArrivalInfo
-	if err := json.NewDecoder(resp.Body).Decode(&arrivalInfo); err != nil {
-		errCh <- err
-		return
-	}
-
-	ch <- &arrivalInfo
-}
+//func fetchArrivalInfo(url string, wg *sync.WaitGroup, ch chan<- *ArrivalInfo, errCh chan<- error) {
+//	defer wg.Done()
+//
+//	resp, err := http.Get(url)
+//	if err != nil {
+//		errCh <- err
+//		return
+//	}
+//	defer resp.Body.Close()
+//
+//	var arrivalInfo ArrivalInfo
+//	if err := json.NewDecoder(resp.Body).Decode(&arrivalInfo); err != nil {
+//		errCh <- err
+//		return
+//	}
+//
+//	ch <- &arrivalInfo
+//}
 
 func main() {
 	baseUrl := "http://swopenapi.seoul.go.kr/api/subway/764a4a554974626e35305252644367/json/realtimeStationArrival/0/8/"
 	lineTwoStations := []string{"역삼", "강남", "교대", "서초", "방배", "사당"}
 	var urls []string
-	for _, v := range lineTwoStations {
-		urls = append(urls, fmt.Sprint(baseUrl, v))
+	for _, station := range lineTwoStations {
+		urls = append(urls, fmt.Sprint(baseUrl, station))
 	}
 
 	var wg sync.WaitGroup

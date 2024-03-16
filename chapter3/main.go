@@ -9,10 +9,14 @@ import (
 var errRequestFailed = errors.New("Request failed")
 
 func main() {
+	//var results = map[string]string{}
+	var results = make(map[string]string)
+
 	urls := []string{"https://www.naver.com", "https://google.com", "https://academy.nomadcoders.co/"}
+	results["gello"] = "hello"
 
 	for _, url := range urls {
-		hitWeb(url)
+		err := hitWeb(url)
 	}
 }
 
