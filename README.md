@@ -1,2 +1,9 @@
 # nomad-go
-- goroutine -> go kafka-producer
+- learned
+  - basic golang
+  - goroutine
+  - goquery
+  - echo framework
+
+- after the course
+  - tech blog scrapper using goroutine
