@@ -79,17 +79,18 @@ func main() {
 			}
 			// Display the arrival information
 			for _, arrival := range arrivalInfo.RealtimeArrivalList {
-				fmt.Printf("Subway ID: %s, Line: %s, Station: %s, Arrival Message: %s, , Arrival Message3: %s, TrainLineNm: %s, StatnFid: %s, StatnTid: %s, StatnId: %s, UpdnLine: %s\n",
-					arrival.SubwayID,
-					arrival.SubwaysNm,
-					arrival.StatnNm,
-					arrival.ArvlMsg2,
-					arrival.ArvlMsg3,
-					arrival.TrainLineNm,
-					arrival.StatnFid,
-					arrival.StatnTid,
-					arrival.StatnId,
-					arrival.UpdnLine)
+				fmt.Println(arrival)
+				//fmt.Printf("Subway ID: %s, Line: %s, Station: %s, Arrival Message: %s, , Arrival Message3: %s, TrainLineNm: %s, StatnFid: %s, StatnTid: %s, StatnId: %s, UpdnLine: %s\n",
+				//	arrival.SubwayID,
+				//	arrival.SubwaysNm,
+				//	arrival.StatnNm,
+				//	arrival.ArvlMsg2,
+				//	arrival.ArvlMsg3,
+				//	arrival.TrainLineNm,
+				//	arrival.StatnFid,
+				//	arrival.StatnTid,
+				//	arrival.StatnId,
+				//	arrival.UpdnLine)
 			}
 			fmt.Println("--------------------------------------")
 		case err := <-errCh:

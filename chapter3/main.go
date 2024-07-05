@@ -22,7 +22,7 @@ func main() {
 		"https://tech.kakaobank.com/page/1/",
 		"https://toss.tech/tech",
 		"https://d2.naver.com/helloworld",
-		"https://medium.com/daangn/development/home"}
+		"https://medium.com/daangn/development/home", "https://blog.banksalad.com/tech/"}
 
 	for _, url := range urls {
 		go hitWeb(url, c)
