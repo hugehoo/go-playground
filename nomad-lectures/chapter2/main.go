@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"nomad-go/chapter2/banking"
+	"nomad-go/nomad-lectures/chapter2/banking"
 )
 
 func main() {
