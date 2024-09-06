@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 func main() {
@@ -29,34 +30,48 @@ func checkErr(err error) {
 }
 
 func recursiveSearch(absPath string, keyword string) {
+	var wg sync.WaitGroup
 	// 전체 파일/디렉토리 순회
 	// 절대경로에 존재하는 모든 파일, 디렉토리 찾기
 	for _, file := range getFiles(absPath) {
+		fullFilePath := filepath.Join(absPath, file.Name())
+
 		// 디렉토리일 경우
 		if file.IsDir() {
 			join := filepath.Join(absPath, file.Name())
-			recursiveSearch(join, keyword)
+			wg.Add(1)
+			go func(path string) {
+				defer wg.Done()
+				recursiveSearch(path, keyword)
+			}(join)
+		} else {
+			wg.Add(1)
+			go func(filePath string) {
+				defer wg.Done()
+				processFile(filePath, keyword)
+			}(fullFilePath)
 		}
-
-		// 파일일 경우
-		fullFilePath := filepath.Join(absPath, file.Name())
-		data, err := os.Open(fullFilePath)
-		checkErr(err)
-
-		// 파일을 스캔
-		scanner := bufio.NewScanner(data)
-		currentLine := 0
-		for scanner.Scan() {
-			currentLine++
-			line := scanner.Text()
-			if searchText(keyword, line) {
-				fmt.Println(currentLine, "|", file.Name())
-				break
-			}
-		}
-
-		closeFileExplicitly(data, fullFilePath)
 	}
+	wg.Wait()
+}
+
+func processFile(filePath string, keyword string) {
+	data, err := os.Open(filePath)
+	checkErr(err)
+	defer closeFileExplicitly(data, filePath)
+
+	// 파일을 스캔
+	scanner := bufio.NewScanner(data)
+	currentLine := 0
+	for scanner.Scan() {
+		currentLine++
+		line := scanner.Text()
+		if searchText(keyword, line) {
+			fmt.Println(currentLine, "|", filepath.Base(filePath))
+			break
+		}
+	}
+
 }
 
 func findAbsPath(relativePath string) string {
@@ -74,45 +89,6 @@ func getFiles(absPath string) []os.DirEntry {
 func closeFileExplicitly(file *os.File, fullFilePath string) {
 	if err := file.Close(); err != nil {
 		log.Printf("Error closing file %s: %v", fullFilePath, err)
-	}
-}
-
-func mai2n() {
-
-	// 파일을 읽으려면 꼭 절대경로를 다붙여서 넣어야하나?
-	path, err := filepath.Abs("sample.text")
-	println(path)
-
-	open, err := os.Open("./sample.text")
-	if err != nil {
-		fmt.Println("pen", open, err)
-	}
-	fmt.Println("드디어 ㅅㅂ", open)
-	// "dgrep {keyword} {relative path}"
-	relativePath := "nomad-lectures/chapter2" //"devsisters" //../defer
-	keyword := "keyword"
-	fmt.Println("relative Path: ", relativePath)
-	fmt.Println("keyword: ", keyword)
-
-	dir := filepath.Dir("../nomad-lectures/chapter2/banking")
-	fmt.Println("dir", dir)
-	absolutePath := strings.Split(dir, "../")
-	if readDir, err := os.ReadDir(absolutePath[1]); err != nil {
-		fmt.Println("err: ", err)
-	} else {
-		for i := 0; i < len(readDir); i++ {
-			entry := readDir[i]
-			if !entry.IsDir() {
-				fmt.Println("files:", entry.Name())
-				abs, _ := filepath.Abs(entry.Name())
-				fmt.Println("abs", abs)
-				if file, err := os.Open(abs + "/" + entry.Name()); err == nil {
-					fmt.Println("open file", abs, file)
-				} else {
-					fmt.Println("can't open file", err)
-				}
-			}
-		}
 	}
 }
 
