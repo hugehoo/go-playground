@@ -11,8 +11,13 @@ import (
 )
 
 func main() {
-	keyword := "DEVSISTERS"
-	relativePath := "./nomad-lectures/chapter2"
+	if len(os.Args) < 3 {
+		log.Fatalf("Usage: %s {keyword} {relative path}", os.Args[0])
+	}
+
+	// 명령줄 인자에서 키워드와 상대경로를 받아옴
+	keyword := os.Args[1]
+	relativePath := os.Args[2]
 
 	// 절대경로 찾기
 	absPath := findAbsPath(relativePath)
